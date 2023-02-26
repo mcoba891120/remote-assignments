@@ -70,7 +70,7 @@ app.get('/users', (req, res) => {
                     name:username,
                     email:useremail,
                 },
-                date:date
+                date:date.toUTCString()
             }
         });
     });
@@ -79,7 +79,7 @@ app.get('/users', (req, res) => {
 app.use(bodyParser.json());
 app.post('/users',(req, res) => {
     const {name, email, password} = req.body;
-    const date = new Date().toUTCString();
+    const date = req.headers['Request-Date'];
     const sql_if_email = 'SELECT COUNT(*) as count FROM users WHERE email = ?';
     connection.query(sql_if_email,[email],(error,results) => {
         if (error) {
