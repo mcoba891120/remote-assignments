@@ -67,6 +67,16 @@ app.get('/users', (req, res) => {
             res.status(403).json({error: 'user not found'});
             return;
         }
+        if(req.headers['content-type']!=='application/json'){
+            res.status(400);
+            res.send('Content-Type not matched');
+            return;
+        }
+        if(!req.headers['request-date']){
+            res.status(400);
+            res.send('Request-Date missing');
+            return;
+        }
         username = rows.name
         useremail = rows.email
         date = req.headers["request-head"]
@@ -105,6 +115,16 @@ app.post('/users',(req, res) => {
                 return;
             }
             const password = req.body.password;
+            if(req.headers['content-type']!=='application/json'){
+                res.status(400);
+                res.send('Content-type not matched');
+                return;
+            }
+            if(!req.headers['request-date']){
+                res.status(400);
+                res.send('Request-Date missing');
+                return;
+            }
             if (!validatePassword(password)) {
                 res.status(400).json({ error: 'Password must contain at least three of the following character types: upper case letter, lower case letter, number, symbol' });
                 return;
