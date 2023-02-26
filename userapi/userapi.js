@@ -62,7 +62,8 @@ app.get('/users', (req, res) => {
         }
         username = rows.name
         useremail = rows.email
-        date = rows.created
+        date = req.headers["request-date"]
+
         res.json({
             data:{
                 user:{
@@ -70,7 +71,7 @@ app.get('/users', (req, res) => {
                     name:username,
                     email:useremail,
                 },
-                date:date.toUTCString()
+                date:date
             }
         });
     });
@@ -79,7 +80,7 @@ app.get('/users', (req, res) => {
 app.use(bodyParser.json());
 app.post('/users',(req, res) => {
     const {name, email, password} = req.body;
-    const date = req.headers['Request-Date'];
+    const date_created = new Date().toUTCString()
     const sql_if_email = 'SELECT COUNT(*) as count FROM users WHERE email = ?';
     connection.query(sql_if_email,[email],(error,results) => {
         if (error) {
@@ -91,7 +92,7 @@ app.post('/users',(req, res) => {
             res.status(403).json({error:'email already exists'});
             return;
         }
-        connection.query('INSERT INTO users (name, email, password, created) VALUES (?,?,?,?)', [name, email, password, date],(error,results,fields) => {
+        connection.query('INSERT INTO users (name, email, password, created) VALUES (?,?,?,?)', [name, email, password,date_created],(error,results,fields) => {
             if (error) {
                 console.error('Error executing query: '+error.stack);
                 return;
@@ -101,7 +102,8 @@ app.post('/users',(req, res) => {
                 res.status(400).json({ error: 'Password must contain at least three of the following character types: upper case letter, lower case letter, number, symbol' });
                 return;
             }
-        
+            
+            date = req.headers['request-date']
             console.log(res.status(200),'User created with ID: ' + results.insertId);
             res.json({
                 data:{
