@@ -10,9 +10,16 @@ function validatePassword(password) {
     const hasSymbol = /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test(password);
     const typesCount = [hasUpper, hasLower, hasNumber, hasSymbol].filter(Boolean).length;
     return typesCount >= 3;
-  }
-  
-
+}
+function validatename(password) {
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSymbol = /[-!$%^&*()_+|~=`{}\[\]:";'<>?,.\/]/.test(password);
+    const typesCount = [hasUpper, hasLower, hasNumber, hasSymbol].filter(Boolean).length;
+    return typesCount >= 3;
+}
+isValidName = /^[a-zA-Z0-9]+$/.test(inputName);
 const connection = mysql.createConnection({
     host: "mcoba-db.cyldhxt4vckd.ap-northeast-1.rds.amazonaws.com",
     user: "mcoba",
@@ -62,7 +69,7 @@ app.get('/users', (req, res) => {
         }
         username = rows.name
         useremail = rows.email
-        date = req.headers["request-date"]
+        date = req.headers["request-head"]
 
         res.json({
             data:{
@@ -100,6 +107,14 @@ app.post('/users',(req, res) => {
             const password = req.body.password;
             if (!validatePassword(password)) {
                 res.status(400).json({ error: 'Password must contain at least three of the following character types: upper case letter, lower case letter, number, symbol' });
+                return;
+            }
+            if (!/^[a-zA-Z0-9]+$/.test(name)) {
+                res.status(400).json({ error: 'name must contain only english and number' });
+                return;
+            }
+            if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,})+$/.test(email) {
+                res.status(400).json({error: 'email must be the email format'});
                 return;
             }
             
