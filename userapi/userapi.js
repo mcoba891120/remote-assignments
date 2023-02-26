@@ -67,11 +67,7 @@ app.get('/users', (req, res) => {
             res.status(403).json({error: 'user not found'});
             return;
         }
-        if(req.headers['content-type']!=='application/json'){
-            res.status(400);
-            res.send('Content-Type not matched');
-            return;
-        }
+
         if(!req.headers['request-date']){
             res.status(400);
             res.send('Request-Date missing');
@@ -109,36 +105,37 @@ app.post('/users',(req, res) => {
             res.status(403).json({error:'email already exists'});
             return;
         }
+        if(req.headers['content-type']!=='application/json'){
+            res.status(400);
+            res.send('Content-type not matched');
+            return;
+        }
+        if(!req.headers['request-date']){
+            res.status(400);
+            res.send('Request-Date missing');
+            return;
+        }
+        if (!validatePassword(password)) {
+            res.status(400).json({ error: 'Password must contain at least three of the following character types: upper case letter, lower case letter, number, symbol' });
+            return;
+        }
+        const name_test = /^[a-zA-Z0-9]+$/
+        if (!name_test.test(name)) {
+            res.status(400).json({ error: 'name must contain only english and number' });
+            return;
+        }
+        const email_test = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,})+$/;
+        if (!email_test.test(email)) {
+            res.status(400).json({error: 'email must be the email format'});
+            return;
+        }
         connection.query('INSERT INTO users (name, email, password, created) VALUES (?,?,?,?)', [name, email, password,date_created],(error,results,fields) => {
             if (error) {
                 console.error('Error executing query: '+error.stack);
                 return;
             }
             const password = req.body.password;
-            if(req.headers['content-type']!=='application/json'){
-                res.status(400);
-                res.send('Content-type not matched');
-                return;
-            }
-            if(!req.headers['request-date']){
-                res.status(400);
-                res.send('Request-Date missing');
-                return;
-            }
-            if (!validatePassword(password)) {
-                res.status(400).json({ error: 'Password must contain at least three of the following character types: upper case letter, lower case letter, number, symbol' });
-                return;
-            }
-            const name_test = /^[a-zA-Z0-9]+$/
-            if (!name_test.test(name)) {
-                res.status(400).json({ error: 'name must contain only english and number' });
-                return;
-            }
-            const email_test = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,})+$/;
-            if (!email_test.test(email)) {
-                res.status(400).json({error: 'email must be the email format'});
-                return;
-            }
+            
             
             date = req.headers['request-date']
             console.log(res.status(200),'User created with ID: ' + results.insertId);
