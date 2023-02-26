@@ -19,7 +19,7 @@ function validatename(password) {
     const typesCount = [hasUpper, hasLower, hasNumber, hasSymbol].filter(Boolean).length;
     return typesCount >= 3;
 }
-isValidName = /^[a-zA-Z0-9]+$/.test(inputName);
+
 const connection = mysql.createConnection({
     host: "mcoba-db.cyldhxt4vckd.ap-northeast-1.rds.amazonaws.com",
     user: "mcoba",
@@ -109,11 +109,13 @@ app.post('/users',(req, res) => {
                 res.status(400).json({ error: 'Password must contain at least three of the following character types: upper case letter, lower case letter, number, symbol' });
                 return;
             }
-            if (!/^[a-zA-Z0-9]+$/.test(name)) {
+            const name_test = /^[a-zA-Z0-9]+$/
+            if (!name_test.test(name)) {
                 res.status(400).json({ error: 'name must contain only english and number' });
                 return;
             }
-            if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,})+$/.test(email) {
+            const email_test = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,})+$/;
+            if (!email_test.test(email)) {
                 res.status(400).json({error: 'email must be the email format'});
                 return;
             }
