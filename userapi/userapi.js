@@ -55,7 +55,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/healthcheck', (req, res) => {
-    res.send('Hello, World!');
+    res.send('OK');
 });
 
 app.get('/users', (req, res) => {
