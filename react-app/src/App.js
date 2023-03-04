@@ -5,10 +5,12 @@ const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('');
+  const [res,setRes] = useState('');
 
   
   function handleLogin () {
-    return fetch('http://172.20.10.4:3001/users', {
+    
+    fetch('http://localhost:3001/users', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -16,7 +18,10 @@ const LoginPage = () => {
       },
       body: JSON.stringify({ username, password, email })
     })
-      .then(response => response.json())
+      .then(response => {
+        setRes(response.json())
+        return response.json()
+      })
       .then(data => {
         if (data.success) {
           // Redirect to dashboard or home page
@@ -60,7 +65,8 @@ const LoginPage = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <button type="button" onClick={handleLogin()}>Log In</button>
+        <button type="button" onClick={handleLogin}>Log In</button>
+        {res && <p>{res}</p>}
       </form>
     </div>
   );
