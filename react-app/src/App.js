@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import "./App.css"
 
-const LoginPage = () => {
+const SignupPage = () => {
   const [name, setUsername] = useState('');
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('');
@@ -29,18 +29,18 @@ const LoginPage = () => {
       .then(data => {
         if (data.success) {
           // Redirect to dashboard or home page
-          console.log('Login successful!');
+          console.log('Signup successful!');
         } else {
           // Display error message to user
-          console.log(`Login failed: ${data.message}`);
+          console.log(`Signup failed: ${data.message}`);
         }
       })
       .catch(error => console.error(error));
   };
 
   return (
-    <div className="Login">
-      <h2>Login</h2>
+    <div className="Signup">
+      <h2>Signup</h2>
       <form>
         <div class Name >
           <label htmlFor="name">Username:</label>
@@ -79,5 +79,5 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default SignupPage;
 
