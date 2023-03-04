@@ -10,7 +10,7 @@ const LoginPage = () => {
   
   function handleLogin () {
     
-    fetch('http://localhost:3001/users', {
+    fetch('http://13.112.217.190:3001/users', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
