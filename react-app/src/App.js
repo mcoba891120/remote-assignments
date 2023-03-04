@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import "./App.css"
 
 const LoginPage = () => {
-  const [username, setUsername] = useState('');
+  const [name, setUsername] = useState('');
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('');
   const [res,setRes] = useState('');
@@ -16,11 +16,15 @@ const LoginPage = () => {
         'Content-Type': 'application/json',
         'request-date': 'Wed, 22 Feb 2023 16:47:36 GMT'
       },
-      body: JSON.stringify({ username, password, email })
+      body: JSON.stringify({ name, password, email })
     })
       .then(response => {
-        setRes(response.json())
         return response.json()
+      })
+      .then(message => {
+        message = JSON.stringify(message)
+        setRes(message)
+        console.log(res)
       })
       .then(data => {
         if (data.success) {
@@ -38,12 +42,12 @@ const LoginPage = () => {
     <div className="Login">
       <h2>Login</h2>
       <form>
-        <div>
-          <label htmlFor="username">Username:</label>
+        <div class Name >
+          <label htmlFor="name">Username:</label>
           <input
-            type="text"
-            id="username"
-            value={username}
+            type="name"
+            id="name"
+            value={name}
             onChange={(e) => setUsername(e.target.value)}
           />
         </div>
@@ -66,9 +70,12 @@ const LoginPage = () => {
           />
         </div>
         <button type="button" onClick={handleLogin}>Log In</button>
-        {res && <p>{res}</p>}
+        <div className="resp" >
+          <p>{res}</p>
+        </div>
       </form>
     </div>
+    
   );
 };
 
