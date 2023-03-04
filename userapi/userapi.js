@@ -2,6 +2,9 @@ const mysql = require('mysql2');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const cors = require('cors');
+
+app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(bodyParser.urlencoded({extended:true}));
 function validatePassword(password) {
     const hasUpper = /[A-Z]/.test(password);
