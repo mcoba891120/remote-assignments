@@ -2,6 +2,9 @@ const mysql = require('mysql2');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const cors = require('cors');
+
+app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(bodyParser.urlencoded({extended:true}));
 function validatePassword(password) {
     const hasUpper = /[A-Z]/.test(password);
@@ -51,10 +54,10 @@ app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
 
-app.listen(3001, () => {
-    console.log('Server is running on port 3001');
-
+app.get('/healthcheck', (req, res) => {
+    res.send('OK');
 });
+
 app.get('/users', (req, res) => {
     const userId = req.query.id;
     connection.query('SELECT * FROM users WHERE id = ?', [userId], (error, [rows]) => {
@@ -62,6 +65,9 @@ app.get('/users', (req, res) => {
             console.log(error);
             res.status(400).json({error: 'database error'});
             return;
+        }
+        if (rows == undefined) {
+            res.status(403).json({error:'user undefine'});
         }
         if (rows.length === 0) {
             res.status(403).json({error: 'user not found'});
@@ -91,6 +97,8 @@ app.get('/users', (req, res) => {
 });
 
 app.use(bodyParser.json());
+
+
 app.post('/users',(req, res) => {
     const {name, email, password} = req.body;
     const date_created = new Date().toUTCString()
@@ -134,9 +142,6 @@ app.post('/users',(req, res) => {
                 console.error('Error executing query: '+error.stack);
                 return;
             }
-            const password = req.body.password;
-            
-            
             date = req.headers['request-date']
             console.log(res.status(200),'User created with ID: ' + results.insertId);
             res.json({
@@ -153,3 +158,8 @@ app.post('/users',(req, res) => {
     })
     
 })
+
+app.listen(3001, () => {
+    console.log('Server is running on port 3001');
+
+});
